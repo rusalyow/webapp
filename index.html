@@ -6,21 +6,77 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Telegram WebApp</title>
     <style>
+    :root {
+        --background-light: #ffffff;
+        --background-dark: #2e2e2e;
+        --text-light: #000000;
+        --text-dark: #ffffff;
+        --accent-light: #007bff;
+        --accent-dark: #4caf50;
+    }
+
+    body {
+        background-color: var(--background-light);
+        color: var(--text-light);
+        font-family: Arial, sans-serif;
+        text-align: center;
+        margin: 20px;
+    }
+
+    img {
+        border-radius: 50%;
+    }
+
+    /* Темная тема */
+    @media (prefers-color-scheme: dark) {
         body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 20px;
+            background-color: var(--background-dark);
+            color: var(--text-dark);
         }
-        img {
-            border-radius: 50%;
+
+        h1, h2 {
+            color: var(--accent-dark);
         }
-    </style>
+    }
+
+    /* Светлая тема */
+    @media (prefers-color-scheme: light) {
+        body {
+            background-color: var(--background-light);
+            color: var(--text-light);
+        }
+
+        h1, h2 {
+            color: var(--accent-light);
+        }
+    }
+</style>
+
 </head>
 <body>
     <h1>Добро пожаловать!</h1>
     <div id="user-info">
         <p>Загрузка...</p>
     </div>
+    <svg width="200" height="200" viewBox="0 0 200 200" id="circleChart">
+    <circle cx="100" cy="100" r="90" stroke="gray" stroke-width="30" fill="none" />
+    <circle cx="100" cy="100" r="90" stroke="blue" stroke-width="30" fill="none" stroke-dasharray="565" stroke-dashoffset="0" id="segment1" />
+    <circle cx="100" cy="100" r="90" stroke="red" stroke-width="30" fill="none" stroke-dasharray="565" stroke-dashoffset="565" id="segment2" />
+    <circle cx="100" cy="100" r="90" stroke="green" stroke-width="30" fill="none" stroke-dasharray="565" stroke-dashoffset="1130" id="segment3" />
+</svg>
+
+<script>
+    document.getElementById("segment1").addEventListener("click", function() {
+        this.style.strokeDashoffset = "565"; // скрыть сегмент
+    });
+    document.getElementById("segment2").addEventListener("click", function() {
+        this.style.strokeDashoffset = "1130"; // скрыть сегмент
+    });
+    document.getElementById("segment3").addEventListener("click", function() {
+        this.style.strokeDashoffset = "1695"; // скрыть сегмент
+    });
+</script>
+
 
     <script>
         // Telegram Web App API
