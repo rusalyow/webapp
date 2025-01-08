@@ -62,6 +62,7 @@
             );
             cursor: pointer;
             display: inline-block;
+            position: relative;
         }
 </style>
 
@@ -91,17 +92,29 @@
         }
 
         const circle = document.getElementById('circleChart');
+        let closedSectors = { sport: false, love: false, work: false };  // Запоминаем закрытые сектора
+
         // Функция для обработки клика на сектор
         function closeSector(startAngle, endAngle, sectorName) {
             const gradient = `conic-gradient(
-                gray 0% ${startAngle}%,
-                green ${startAngle}% ${endAngle}%,
-                gray ${endAngle}% 100%
+                ${closedSectors.sport ? 'green' : 'gray'} 0% ${closedSectors.sport ? 33 : startAngle}%,
+                ${closedSectors.love ? 'green' : 'gray'} ${closedSectors.sport ? 33 : startAngle}% ${closedSectors.love ? 66 : endAngle}%, 
+                ${closedSectors.work ? 'green' : 'gray'} ${closedSectors.love ? 66 : startAngle}% 100%
             )`;
             circle.style.background = gradient;
+
+            if (sectorName === 'Спорт') {
+                closedSectors.sport = true;
+            } else if (sectorName === 'Любовь') {
+                closedSectors.love = true;
+            } else if (sectorName === 'Работа') {
+                closedSectors.work = true;
+            }
+
             alert(`${sectorName} сектор закрыт`);
         }
-         // Обработчик кликов на круг
+
+        // Обработчик кликов на круг
         circle.addEventListener('click', function(e) {
             const rect = circle.getBoundingClientRect();
             const x = e.clientX - rect.left;
@@ -110,13 +123,13 @@
             const centerY = rect.height / 2;
             const angle = Math.atan2(y - centerY, x - centerX) * (180 / Math.PI) + 180;
 
-            if (angle >= 0 && angle < 120) {
+            if (angle >= 0 && angle < 120 && !closedSectors.sport) {
                 // Спорт
                 closeSector(0, 33, 'Спорт');
-            } else if (angle >= 120 && angle < 240) {
+            } else if (angle >= 120 && angle < 240 && !closedSectors.love) {
                 // Любовь
                 closeSector(33, 66, 'Любовь');
-            } else {
+            } else if (angle >= 240 && angle < 360 && !closedSectors.work) {
                 // Работа
                 closeSector(66, 100, 'Работа');
             }
