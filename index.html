@@ -26,7 +26,7 @@
         // Telegram Web App API
         const tg = window.Telegram.WebApp;
 
-        tg.showAlert(`Добро пожаловать, @${tg.WebAppUser.username}.`);
+        tg.showAlert(`Добро пожаловать, @${tg.initDataUnsafe.user.username}.`);
     </script>
 </body>
 </html>
