@@ -50,8 +50,7 @@
             color: var(--accent-light);
         }
     }
-
-        #circleChart {
+#circleChart {
             width: 200px;
             height: 200px;
             border-radius: 50%;
@@ -63,6 +62,7 @@
             cursor: pointer;
             display: inline-block;
             position: relative;
+            border: 2px solid black;  /* Граница для наглядности */
         }
 </style>
 
@@ -91,27 +91,22 @@
             document.getElementById('user-info').innerText = "Не удалось получить данные о пользователе.";
         }
 
-        const circle = document.getElementById('circleChart');
-        let closedSectors = { sport: false, love: false, work: false };  // Запоминаем закрытые сектора
+              const circle = document.getElementById('circleChart');
+        const sectors = {
+            sport: { start: 0, end: 33, color: 'gray', name: 'Спорт' },
+            love: { start: 33, end: 66, color: 'gray', name: 'Любовь' },
+            work: { start: 66, end: 100, color: 'gray', name: 'Работа' }
+        };
 
-        // Функция для обработки клика на сектор
-        function closeSector(startAngle, endAngle, sectorName) {
-            const gradient = `conic-gradient(
-                ${closedSectors.sport ? 'green' : 'gray'} 0% ${closedSectors.sport ? 33 : startAngle}%,
-                ${closedSectors.love ? 'green' : 'gray'} ${closedSectors.sport ? 33 : startAngle}% ${closedSectors.love ? 66 : endAngle}%, 
-                ${closedSectors.work ? 'green' : 'gray'} ${closedSectors.love ? 66 : startAngle}% 100%
+        // Функция для обновления цвета сектора
+        function updateSectorColor(sector, color) {
+            sector.color = color;
+            const newGradient = `conic-gradient(
+                ${sectors.sport.color} 0% ${sectors.sport.end}%, 
+                ${sectors.love.color} ${sectors.love.start}% ${sectors.love.end}%, 
+                ${sectors.work.color} ${sectors.work.start}% ${sectors.work.end}%
             )`;
-            circle.style.background = gradient;
-
-            if (sectorName === 'Спорт') {
-                closedSectors.sport = true;
-            } else if (sectorName === 'Любовь') {
-                closedSectors.love = true;
-            } else if (sectorName === 'Работа') {
-                closedSectors.work = true;
-            }
-
-            alert(`${sectorName} сектор закрыт`);
+            circle.style.background = newGradient;
         }
 
         // Обработчик кликов на круг
@@ -123,15 +118,15 @@
             const centerY = rect.height / 2;
             const angle = Math.atan2(y - centerY, x - centerX) * (180 / Math.PI) + 180;
 
-            if (angle >= 0 && angle < 120 && !closedSectors.sport) {
-                // Спорт
-                closeSector(0, 33, 'Спорт');
-            } else if (angle >= 120 && angle < 240 && !closedSectors.love) {
-                // Любовь
-                closeSector(33, 66, 'Любовь');
-            } else if (angle >= 240 && angle < 360 && !closedSectors.work) {
-                // Работа
-                closeSector(66, 100, 'Работа');
+            if (angle >= sectors.sport.start && angle < sectors.sport.end && sectors.sport.color === 'gray') {
+                updateSectorColor(sectors.sport, 'green');
+                alert(`${sectors.sport.name} сектор закрыт`);
+            } else if (angle >= sectors.love.start && angle < sectors.love.end && sectors.love.color === 'gray') {
+                updateSectorColor(sectors.love, 'green');
+                alert(`${sectors.love.name} сектор закрыт`);
+            } else if (angle >= sectors.work.start && angle < sectors.work.end && sectors.work.color === 'gray') {
+                updateSectorColor(sectors.work, 'green');
+                alert(`${sectors.work.name} сектор закрыт`);
             }
         });
     </script>
