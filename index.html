@@ -25,8 +25,17 @@
     <script>
         // Telegram Web App API
         const tg = window.Telegram.WebApp;
+        const user = tg.initDataUnsafe.user;
 
-        tg.showAlert(`Добро пожаловать, @${tg.initDataUnsafe.user.username}.`);
+        if (user) {
+            document.getElementById('user-info').innerHTML = `
+                <h2>${user.first_name} ${user.last_name || ''}</h2>
+                <img src="https://t.me/i/userpic/320/${user.username}.jpg" alt="Avatar" width="100" />
+                <p>@${user.username}</p>
+            `;
+        } else {
+            document.getElementById('user-info').innerText = "Не удалось получить данные о пользователе.";
+        }
     </script>
 </body>
 </html>
