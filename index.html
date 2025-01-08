@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <script src="https://telegram.org/js/telegram-web-app.js?56"></script>
+     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Telegram WebApp</title>
@@ -50,19 +51,9 @@
             color: var(--accent-light);
         }
     }
-#circleChart {
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            background: conic-gradient(
-                gray 0% 33%,   /* Спорт */
-                gray 33% 66%,  /* Любовь */
-                gray 66% 100%  /* Работа */
-            );
-            cursor: pointer;
-            display: inline-block;
-            position: relative;
-            border: 2px solid black;  /* Граница для наглядности */
+canvas {
+            width: 300px !important;
+            height: 300px !important;
         }
 </style>
 
@@ -72,7 +63,7 @@
     <div id="user-info">
         <p>Загрузка...</p>
     </div>
-    <div id="circleChart"></div>
+     <canvas id="myPieChart"></canvas>
 
 
 
@@ -91,43 +82,50 @@
             document.getElementById('user-info').innerText = "Не удалось получить данные о пользователе.";
         }
 
-              const circle = document.getElementById('circleChart');
-        const sectors = {
-            sport: { start: 0, end: 33, color: 'gray', name: 'Спорт' },
-            love: { start: 33, end: 66, color: 'gray', name: 'Любовь' },
-            work: { start: 66, end: 100, color: 'gray', name: 'Работа' }
+          const ctx = document.getElementById('myPieChart').getContext('2d');
+
+        // Данные для кругового графика
+        const data = {
+            labels: ['Спорт', 'Любовь', 'Работа'],
+            datasets: [{
+                label: 'Сектора',
+                data: [33, 33, 34],  // Проценты
+                backgroundColor: ['gray', 'gray', 'gray'],  // Начальные цвета секторов
+                borderWidth: 1
+            }]
         };
 
-        // Функция для обновления цвета сектора
-        function updateSectorColor(sector, color) {
-            sector.color = color;
-            const newGradient = `conic-gradient(
-                ${sectors.sport.color} 0% ${sectors.sport.end}%, 
-                ${sectors.love.color} ${sectors.love.start}% ${sectors.love.end}%, 
-                ${sectors.work.color} ${sectors.work.start}% ${sectors.work.end}%
-            )`;
-            circle.style.background = newGradient;
-        }
+        // Опции для круга
+        const options = {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                tooltip: {
+                    enabled: false  // Отключаем тултипы, они не нужны для этого
+                }
+            },
+            onClick: (e, activeElements) => {
+                if (activeElements.length > 0) {
+                    const index = activeElements[0].index;
+                    const sectorName = data.labels[index];
+                    
+                    // Меняем цвет на зелёный при клике
+                    data.datasets[0].backgroundColor[index] = 'green';
+                    chart.update(); // Обновляем график
 
-        // Обработчик кликов на круг
-        circle.addEventListener('click', function(e) {
-            const rect = circle.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
-            const angle = Math.atan2(y - centerY, x - centerX) * (180 / Math.PI) + 180;
-
-            if (angle >= sectors.sport.start && angle < sectors.sport.end && sectors.sport.color === 'gray') {
-                updateSectorColor(sectors.sport, 'green');
-                alert(`${sectors.sport.name} сектор закрыт`);
-            } else if (angle >= sectors.love.start && angle < sectors.love.end && sectors.love.color === 'gray') {
-                updateSectorColor(sectors.love, 'green');
-                alert(`${sectors.love.name} сектор закрыт`);
-            } else if (angle >= sectors.work.start && angle < sectors.work.end && sectors.work.color === 'gray') {
-                updateSectorColor(sectors.work, 'green');
-                alert(`${sectors.work.name} сектор закрыт`);
+                    // Показываем сообщение о закрытии сектора
+                    alert(`${sectorName} сектор закрыт`);
+                }
             }
+        };
+
+        // Создаём график
+        const chart = new Chart(ctx, {
+            type: 'pie', // Тип графика - круговой
+            data: data,
+            options: options
         });
     </script>
 </body>
