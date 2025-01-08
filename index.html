@@ -50,6 +50,19 @@
             color: var(--accent-light);
         }
     }
+
+         #circleChart {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: conic-gradient(
+                blue 0% 33%,  /* Спорт */
+                red 33% 66%,  /* Любовь */
+                green 66% 100% /* Работа */
+            );
+            cursor: pointer;
+            display: inline-block;
+        }
 </style>
 
 </head>
@@ -58,24 +71,8 @@
     <div id="user-info">
         <p>Загрузка...</p>
     </div>
-    <svg width="200" height="200" viewBox="0 0 200 200" id="circleChart">
-    <circle cx="100" cy="100" r="90" stroke="gray" stroke-width="30" fill="none" />
-    <circle cx="100" cy="100" r="90" stroke="blue" stroke-width="30" fill="none" stroke-dasharray="565" stroke-dashoffset="0" id="segment1" />
-    <circle cx="100" cy="100" r="90" stroke="red" stroke-width="30" fill="none" stroke-dasharray="565" stroke-dashoffset="565" id="segment2" />
-    <circle cx="100" cy="100" r="90" stroke="green" stroke-width="30" fill="none" stroke-dasharray="565" stroke-dashoffset="1130" id="segment3" />
-</svg>
+    <div id="circleChart"></div>
 
-<script>
-    document.getElementById("segment1").addEventListener("click", function() {
-        this.style.strokeDashoffset = "565"; // скрыть сегмент
-    });
-    document.getElementById("segment2").addEventListener("click", function() {
-        this.style.strokeDashoffset = "1130"; // скрыть сегмент
-    });
-    document.getElementById("segment3").addEventListener("click", function() {
-        this.style.strokeDashoffset = "1695"; // скрыть сегмент
-    });
-</script>
 
 
     <script>
@@ -92,6 +89,22 @@
         } else {
             document.getElementById('user-info').innerText = "Не удалось получить данные о пользователе.";
         }
+
+        const circle = document.getElementById('circleChart');
+        let activeSegment = 0;
+
+        circle.addEventListener('click', function() {
+            if (activeSegment === 0) {
+                circle.style.background = 'conic-gradient(red 0% 33%, blue 33% 66%, green 66% 100%)';  // Закрытие первого сектора
+                activeSegment = 1;
+            } else if (activeSegment === 1) {
+                circle.style.background = 'conic-gradient(green 0% 33%, blue 33% 66%, red 66% 100%)';  // Закрытие второго сектора
+                activeSegment = 2;
+            } else {
+                circle.style.background = 'conic-gradient(blue 0% 33%, red 33% 66%, green 66% 100%)';  // Закрытие третьего сектора
+                activeSegment = 0;
+            }
+        });
     </script>
 </body>
 </html>
